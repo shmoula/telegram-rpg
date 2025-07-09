@@ -6,7 +6,6 @@ import cz.satorigeeks.telegramrpg.menu.ShopMenuController
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.StateManager
 import eu.vendeli.tgbot.TelegramBot
-import eu.vendeli.tgbot.annotations.CommandHandler
 import eu.vendeli.tgbot.annotations.UnprocessedHandler
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
@@ -21,13 +20,6 @@ suspend fun main() {
     bot.handleUpdates()
 }
 
-/**
- * Handles the /start command to kick off the conversation.
- */
-@CommandHandler(["/start"])
-suspend fun start(user: User, bot: TelegramBot) {
-    message { "Welcome to Adventure Quest!" }.send(user, bot)
-    MainMenuController.show(user, bot)
 }
 
 /**
