@@ -15,5 +15,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
 }
 

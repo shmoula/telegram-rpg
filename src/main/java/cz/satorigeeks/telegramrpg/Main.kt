@@ -10,16 +10,24 @@ import eu.vendeli.tgbot.annotations.UnprocessedHandler
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
+import io.github.cdimascio.dotenv.dotenv
 
 /**
  * Entry point and central dispatcher for the bot.
  */
 suspend fun main() {
-    val bot = TelegramBot("#bot_token_here#")
+    val env = dotenv {
+        directory = "./"
+        ignoreIfMissing = true
+    }
+
+    val token = env["TELEGRAM_BOT_TOKEN"]
+        ?: System.getenv("TELEGRAM_BOT_TOKEN")
+        ?: error("Missing TELEGRAM_BOT_TOKEN in environment")
+
+    val bot = TelegramBot(token)
 
     bot.handleUpdates()
-}
-
 }
 
 /**
