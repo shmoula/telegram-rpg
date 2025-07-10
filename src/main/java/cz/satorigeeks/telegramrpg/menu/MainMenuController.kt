@@ -46,7 +46,7 @@ object MainMenuController {
         val hero = SessionManager.getHero(user)
 
         when (MainMenuAction.fromCallback(update.text.trim())) {
-            MainMenuAction.ROAM -> RoamMenuController.show(user, bot)
+            MainMenuAction.ROAM -> RoamMenuController.show(user, bot, true)
             MainMenuAction.INFO -> {
                 message { hero.getInfo() }.send(user, bot)
                 show(user, bot)
