@@ -1,7 +1,7 @@
 package cz.satorigeeks.telegramrpg.menu
 
 import cz.satorigeeks.telegramrpg.state.GameState
-import cz.satorigeeks.telegramrpg.state.StateManager
+import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
@@ -26,7 +26,7 @@ object RoamMenuController {
                 "Autopilot" callback "4"
             }
             .send(user, bot)
-        StateManager.set(user, GameState.ROAM_MENU)
+        SessionManager.setState(user, GameState.ROAM_MENU)
     }
 
     /**

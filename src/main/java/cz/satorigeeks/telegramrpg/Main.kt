@@ -4,10 +4,9 @@ import cz.satorigeeks.telegramrpg.menu.MainMenuController
 import cz.satorigeeks.telegramrpg.menu.RoamMenuController
 import cz.satorigeeks.telegramrpg.menu.ShopMenuController
 import cz.satorigeeks.telegramrpg.state.GameState
-import cz.satorigeeks.telegramrpg.state.StateManager
+import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.annotations.UnprocessedHandler
-import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
 import io.github.cdimascio.dotenv.dotenv
@@ -35,12 +34,10 @@ suspend fun main() {
  */
 @UnprocessedHandler
 suspend fun dispatch(update: ProcessedUpdate, user: User, bot: TelegramBot) {
-    when (StateManager.get(user)) {
+    val session = SessionManager.get(user)
+    when (session.gameState) {
         GameState.MAIN_MENU -> MainMenuController.handle(update, user, bot)
         GameState.ROAM_MENU -> RoamMenuController.handle(update, user, bot)
         GameState.SHOP_MENU -> ShopMenuController.handle(update, user, bot)
-        else -> message {
-            "I didn't understand that. Please type /start to begin."
-        }.send(user, bot)
     }
 }

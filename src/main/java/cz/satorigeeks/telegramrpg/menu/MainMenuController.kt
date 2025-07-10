@@ -1,7 +1,7 @@
 package cz.satorigeeks.telegramrpg.menu
 
 import cz.satorigeeks.telegramrpg.state.GameState
-import cz.satorigeeks.telegramrpg.state.StateManager
+import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
@@ -23,20 +23,20 @@ object MainMenuController {
             "Rest at inn" callback "3"
             newLine()
             "Shop at store" callback "4"
-            newLine()
-            "Exit the game" callback "5"
         }.send(user, bot)
-        StateManager.set(user, GameState.MAIN_MENU)
+        SessionManager.setState(user, GameState.MAIN_MENU)
     }
 
     /**
      * Handles user selection from the main menu.
      */
     suspend fun handle(update: ProcessedUpdate, user: User, bot: TelegramBot) {
+        val hero = SessionManager.getHero(user)
+
         when (update.text.trim()) {
             "1" -> RoamMenuController.show(user, bot)
             "2" -> {
-                message { "Your character info is shown below:" }.send(user, bot)
+                message { hero.getInfo() }.send(user, bot)
                 show(user, bot)
             }
 
@@ -46,10 +46,6 @@ object MainMenuController {
             }
 
             "4" -> ShopMenuController.show(user, bot)
-            "5" -> {
-                message { "Exiting the game..." }.send(user, bot)
-                show(user, bot)
-            }
 
             else -> {
                 message { "Sorry, wrong choice." }.send(user, bot)
