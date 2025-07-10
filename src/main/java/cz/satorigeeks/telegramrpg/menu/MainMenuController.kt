@@ -12,15 +12,11 @@ import eu.vendeli.tgbot.types.component.ProcessedUpdate
  * Handles display and input for the Main Menu state.
  */
 object MainMenuController {
-    enum class MainMenuAction(val callback: String) {
-        ROAM("ROAM"),
-        INFO("INFO"),
-        REST("REST"),
-        SHOP("SHOP");
-
-        companion object {
-            fun fromCallback(cb: String) = entries.firstOrNull { it.callback == cb }
-        }
+    enum class MainMenuAction {
+        ROAM,
+        INFO,
+        REST,
+        SHOP
     }
 
     /**
@@ -28,13 +24,13 @@ object MainMenuController {
      */
     suspend fun show(user: User, bot: TelegramBot) {
         message { "What would you like to do?" }.inlineKeyboardMarkup {
-            "Roam the world" callback MainMenuAction.ROAM.callback
+            "Roam the world" callback MainMenuAction.ROAM.name
             newLine()
-            "Get character info" callback MainMenuAction.INFO.callback
+            "Get character info" callback MainMenuAction.INFO.name
             newLine()
-            "Rest at inn" callback MainMenuAction.REST.callback
+            "Rest at inn" callback MainMenuAction.REST.name
             newLine()
-            "Shop at store" callback MainMenuAction.SHOP.callback
+            "Shop at store" callback MainMenuAction.SHOP.name
         }.send(user, bot)
         SessionManager.setState(user, GameState.MAIN_MENU)
     }
@@ -45,7 +41,7 @@ object MainMenuController {
     suspend fun handle(update: ProcessedUpdate, user: User, bot: TelegramBot) {
         val hero = SessionManager.getHero(user)
 
-        when (MainMenuAction.fromCallback(update.text.trim())) {
+        when (MainMenuAction.valueOf(update.text)) {
             MainMenuAction.ROAM -> RoamMenuController.show(user, bot, true)
             MainMenuAction.INFO -> {
                 message { hero.getInfo() }.send(user, bot)
@@ -60,11 +56,6 @@ object MainMenuController {
             }
 
             MainMenuAction.SHOP -> ShopMenuController.show(user, bot)
-
-            else -> {
-                message { "Sorry, wrong choice." }.send(user, bot)
-                show(user, bot)
-            }
         }
     }
 }
