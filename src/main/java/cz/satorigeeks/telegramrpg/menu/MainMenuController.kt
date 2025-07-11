@@ -26,13 +26,13 @@ object MainMenuController {
      */
     suspend fun show(user: User, bot: TelegramBot) {
         message { "What would you like to do?" }.inlineKeyboardMarkup {
-            "Roam the world" callback MainMenuAction.ROAM.name
+            "\uD83E\uDDED Roam the world" callback MainMenuAction.ROAM.name
             newLine()
-            "Get character info" callback MainMenuAction.INFO.name
+            "\uD83D\uDCDC Get character info" callback MainMenuAction.INFO.name
             newLine()
-            "Rest at inn" callback MainMenuAction.REST.name
+            "\uD83D\uDECF\uFE0F Rest at inn" callback MainMenuAction.REST.name
             newLine()
-            "Shop at store" callback MainMenuAction.SHOP.name
+            "\uD83D\uDED2 Shop at store" callback MainMenuAction.SHOP.name
         }.send(user, bot)
         SessionManager.setState(user, GameState.MAIN_MENU)
     }
@@ -52,8 +52,10 @@ object MainMenuController {
                 SessionManager.setHeroFirst(user, heroFirst)
 
                 message {
-                    "You encounter a wild '${enemy.name}' with HP = ${enemy.health.toInt()} and MP = ${enemy.magicPower}!\n" +
-                            if (heroFirst) "You go first." else "Enemy goes first."
+                    "🌲 You encounter a wild '${enemy.name}'! \n" +
+                            "❤️ HP: ${enemy.health.toInt()} | 🔮 MP: ${enemy.magicPower}\n" +
+                            if (heroFirst) "⚔️ You go first." else "👹 Enemy goes first."
+
                 }.send(user, bot)
 
                 RoamMenuController.show(user, bot)

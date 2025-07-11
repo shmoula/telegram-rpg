@@ -32,13 +32,13 @@ object RoamMenuController {
 
         message { "What would you like to do in battle?" }
             .inlineKeyboardMarkup {
-                "Attack the ${enemy.name}!" callback RoamMenuAction.ATTACK.name
+                "⚔\uFE0F Attack the ${enemy.name}!" callback RoamMenuAction.ATTACK.name
                 newLine()
-                "Use Inventory Item" callback RoamMenuAction.INVENTORY.name
+                "\uD83C\uDF92 Use Inventory Item" callback RoamMenuAction.INVENTORY.name
                 newLine()
-                "Attempt to Run Away" callback RoamMenuAction.RUN.name
+                "\uD83C\uDFC3\u200D♂\uFE0F Attempt to Run Away" callback RoamMenuAction.RUN.name
                 newLine()
-                "Autopilot" callback RoamMenuAction.AUTOPILOT.name
+                "\uD83E\uDD16 Autopilot" callback RoamMenuAction.AUTOPILOT.name
             }
             .send(user, bot)
         SessionManager.setState(user, GameState.ROAM_MENU)
@@ -80,10 +80,10 @@ object RoamMenuController {
             RoamMenuAction.RUN -> {
                 if (heroFirst) {
                     if (hero.runAway()) {
-                        message { "You successfully ran away." }.send(user, bot)
+                        message { "\uD83C\uDFC3\u200D♂\uFE0F You successfully ran away." }.send(user, bot)
                         combatState = CombatEngine.CombatState(CombatEngine.CombatState.CombatResult.FLED)
                     } else {
-                        message { "Failed to run away!" }.send(user, bot)
+                        message { "❌ Failed to run away!" }.send(user, bot)
                         combatState = CombatEngine.fight(hero, enemy, heroFirst = true, failedFlee = true)
                         message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
                     }
@@ -93,16 +93,16 @@ object RoamMenuController {
                     message { CombatEngine.resolve(combatState!!.heroAttackResult) }.send(user, bot)
 
                     if (hero.runAway()) {
-                        message { "You successfully ran away." }.send(user, bot)
+                        message { "\uD83C\uDFC3\u200D♂\uFE0F You successfully ran away." }.send(user, bot)
                         combatState = CombatEngine.CombatState(CombatEngine.CombatState.CombatResult.FLED)
                     } else {
-                        message { "Failed to run away!" }.send(user, bot)
+                        message { "❌ Failed to run away!" }.send(user, bot)
                     }
                 }
             }
 
             RoamMenuAction.AUTOPILOT -> {
-                message { "Autopilot engaged! Battling on your behalf." }.send(user, bot)
+                message { "\uD83E\uDD16 Autopilot engaged! Battling on your behalf." }.send(user, bot)
                 while (hero.isAlive && enemy.isAlive) {
                     combatState = CombatEngine.fight(hero, enemy, heroFirst)
 
@@ -125,19 +125,19 @@ object RoamMenuController {
             when (combatState.combatResult) {
                 CombatEngine.CombatState.CombatResult.CONTINUE -> {
                     message {
-                        "Status: ${hero.name} HP = ${hero.health.toInt()} | ${enemy.name} HP = ${enemy.health.toInt()}"
+                        "\uD83D\uDCCA Status: ${hero.name} HP = ${hero.health.toInt()} | ${enemy.name} HP = ${enemy.health.toInt()}"
                     }.send(user, bot)
                     show(user, bot)
                 }
 
                 CombatEngine.CombatState.CombatResult.LOSS -> {
-                    message { "${hero.name} has fallen. Game over." }.send(user, bot)
+                    message { "\uD83D\uDC80 ${hero.name} has fallen. Game over." }.send(user, bot)
                     MainMenuController.show(user, bot)
                 }
 
                 CombatEngine.CombatState.CombatResult.VICTORY -> {
                     message {
-                        "You have vanquished the beast and received ${combatState.gold} Gold and ${combatState.exp} experience!"
+                        "\uD83C\uDFC6 You have vanquished the beast and received ${combatState.gold} Gold and ${combatState.exp} experience!"
                     }.send(user, bot)
                     MainMenuController.show(user, bot)
                 }
