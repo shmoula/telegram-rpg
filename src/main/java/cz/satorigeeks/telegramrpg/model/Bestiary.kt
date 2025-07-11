@@ -52,7 +52,10 @@ object Bestiary {
             hero.level <= 10 -> 150.0
             else -> 250.0
         }
-        return bestiary.filter { it.health <= limit }
-            .let { it.shuffled()[0] }
+        return bestiary
+            .filter { it.health <= limit }
+            .shuffled()
+            .first()
+            .copy()
     }
 }
