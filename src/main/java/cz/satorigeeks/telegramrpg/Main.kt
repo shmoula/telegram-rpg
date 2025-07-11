@@ -34,8 +34,7 @@ suspend fun main() {
  */
 @UnprocessedHandler
 suspend fun dispatch(update: ProcessedUpdate, user: User, bot: TelegramBot) {
-    val session = SessionManager.get(user)
-    when (session.gameState) {
+    when (SessionManager.getState(user)) {
         GameState.MAIN_MENU -> MainMenuController.handle(update, user, bot)
         GameState.ROAM_MENU -> RoamMenuController.handle(update, user, bot)
         GameState.SHOP_MENU -> ShopMenuController.handle(update, user, bot)

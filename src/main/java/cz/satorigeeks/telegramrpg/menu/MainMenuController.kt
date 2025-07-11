@@ -1,12 +1,14 @@
 package cz.satorigeeks.telegramrpg.menu
 
 import cz.satorigeeks.telegramrpg.engine.WorldEngine
+import cz.satorigeeks.telegramrpg.model.Bestiary
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
+import kotlin.random.Random
 
 /**
  * Handles display and input for the Main Menu state.
@@ -42,7 +44,21 @@ object MainMenuController {
         val hero = SessionManager.getHero(user)
 
         when (MainMenuAction.valueOf(update.text)) {
-            MainMenuAction.ROAM -> RoamMenuController.show(user, bot, true)
+            MainMenuAction.ROAM -> {
+                val enemy = Bestiary.gimmeBeast(hero)
+                SessionManager.setEnemy(user, enemy)
+
+                val heroFirst = Random.nextBoolean()
+                SessionManager.setHeroFirst(user, heroFirst)
+
+                message {
+                    "You encounter a wild '${enemy.name}' with HP = ${enemy.health.toInt()} and MP = ${enemy.magicPower}!\n" +
+                            if (heroFirst) "You go first." else "Enemy goes first."
+                }.send(user, bot)
+
+                RoamMenuController.show(user, bot)
+            }
+
             MainMenuAction.INFO -> {
                 message { hero.getInfo() }.send(user, bot)
                 show(user, bot)

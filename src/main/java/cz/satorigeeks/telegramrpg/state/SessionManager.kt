@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.state
 
+import cz.satorigeeks.telegramrpg.model.Enemy
 import cz.satorigeeks.telegramrpg.model.Hero
 import eu.vendeli.tgbot.types.User
 
@@ -21,5 +22,21 @@ object SessionManager {
 
     fun getHero(user: User): Hero {
         return get(user).hero
+    }
+
+    fun setEnemy(user: User, enemy: Enemy) {
+        get(user).enemy = enemy
+    }
+
+    fun getEnemy(user: User): Enemy? {
+        return get(user).enemy
+    }
+
+    fun setHeroFirst(user: User, heroFirst: Boolean) {
+        get(user).heroFirst = heroFirst
+    }
+
+    fun  getHeroFirst(user: User): Boolean {
+        return get(user).heroFirst
     }
 }
