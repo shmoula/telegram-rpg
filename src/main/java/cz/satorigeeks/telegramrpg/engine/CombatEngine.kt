@@ -25,7 +25,7 @@ object CombatEngine {
         val exp: Int = 0
     ) {
         enum class CombatResult {
-            LOSS, VICTORY, CONTINUE
+            LOSS, VICTORY, CONTINUE, FLED
         }
     }
 
@@ -34,18 +34,21 @@ object CombatEngine {
      * @param hero The hero participating in the fight.
      * @param enemy The enemy participating in the fight.
      * @param heroFirst Boolean indicating whether the hero attacks first.
+     * @param failedFlee Boolean indicating whether the hero failed to flee.
      * @return A CombatState object representing the result of the fight round.
      */
-    fun fight(hero: Hero, enemy: Enemy, heroFirst: Boolean): CombatState {
+    fun fight(hero: Hero, enemy: Enemy, heroFirst: Boolean, failedFlee: Boolean = false): CombatState {
         var heroAttackResult: AttackResult? = null
         var enemyAttackResult: AttackResult? = null
 
-        if (heroFirst) {
+        // On failed flee allow only enemy to attack, since player already did his turn (attempt to flee)
+        if (failedFlee) {
+            enemyAttackResult = enemyAttack(enemy, hero)
+        } else if (heroFirst) {
             heroAttackResult = heroAttack(hero, enemy)
             if (enemy.isAlive)
                 enemyAttackResult = enemyAttack(enemy, hero)
         } else {
-            println("The beast attacks first!")
             enemyAttackResult = enemyAttack(enemy, hero)
             if (hero.isAlive)
                 heroAttackResult = heroAttack(hero, enemy)
