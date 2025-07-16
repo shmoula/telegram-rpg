@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg
 
+import cz.satorigeeks.telegramrpg.menu.InventoryMenuController
 import cz.satorigeeks.telegramrpg.menu.MainMenuController
 import cz.satorigeeks.telegramrpg.menu.RoamMenuController
 import cz.satorigeeks.telegramrpg.menu.ShopMenuController
@@ -38,5 +39,6 @@ suspend fun dispatch(update: ProcessedUpdate, user: User, bot: TelegramBot) {
         GameState.MAIN_MENU -> MainMenuController.handle(update, user, bot)
         GameState.ROAM_MENU -> RoamMenuController.handle(update, user, bot)
         GameState.SHOP_MENU -> ShopMenuController.handle(update, user, bot)
+        GameState.INVENTORY_MENU -> InventoryMenuController.handle(update, user, bot)
     }
 }

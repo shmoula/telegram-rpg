@@ -19,27 +19,23 @@ class Hero(
 
     var money: Float = 50f
 
-    private val inventory = MutableList<Item?>(5) { null }
+    private val maxCapacity = 5
+    private val inventory = mutableListOf<Item?>()
 
-    fun addToInventory(item: Item): Boolean {
-        val idx = inventory.indexOfFirst { it == null }
-        return if (idx >= 0) {
-            inventory[idx] = item
-            true
-        } else false
+    fun addToInventory(item: Item?): Boolean {
+        if (inventory.size < maxCapacity) {
+            inventory.add(item)
+            return true
+        } else
+            return false
     }
 
-    fun useItem(slot: Int) {
-        val item = inventory.getOrNull(slot - 1) ?: return
+    fun useItem(item: Item) {
         health += item.healingPower
-        inventory[slot - 1] = null
-
-        println("You used ${item.name} and healed $name by ${item.healingPower} HP.")
-        println("You have ${health.roundToInt()} HP left")
     }
 
-    fun hasItem(slot: Int): Boolean {
-        return inventory.getOrNull(slot - 1) != null
+    fun removeFromInventory(slot: Int) {
+        inventory[slot] = null
     }
 
     fun showInventory(): List<String> =
@@ -50,6 +46,13 @@ class Hero(
                 "${idx + 1}) [empty]"
             }
         }
+
+    fun getInventory(): List<Item?> =
+        inventory
+
+    fun isInventoryEmpty(): Boolean {
+        return inventory.all { it == null }
+    }
 
     private fun checkLevelUp() {
         if (experience >= 100) {

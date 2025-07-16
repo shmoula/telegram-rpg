@@ -34,15 +34,14 @@ object CombatEngine {
      * @param hero The hero participating in the fight.
      * @param enemy The enemy participating in the fight.
      * @param heroFirst Boolean indicating whether the hero attacks first.
-     * @param failedFlee Boolean indicating whether the hero failed to flee.
+     * @param onlyEnemy Boolean indicating whether just the enemy attacks (flee attempt, inventory use).
      * @return A CombatState object representing the result of the fight round.
      */
-    fun fight(hero: Hero, enemy: Enemy, heroFirst: Boolean, failedFlee: Boolean = false): CombatState {
+    fun fight(hero: Hero, enemy: Enemy, heroFirst: Boolean, onlyEnemy: Boolean = false): CombatState {
         var heroAttackResult: AttackResult? = null
         var enemyAttackResult: AttackResult? = null
 
-        // On failed flee allow only enemy to attack, since player already did his turn (attempt to flee)
-        if (failedFlee) {
+        if (onlyEnemy) {
             enemyAttackResult = enemyAttack(enemy, hero)
         } else if (heroFirst) {
             heroAttackResult = heroAttack(hero, enemy)

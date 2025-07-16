@@ -2,6 +2,7 @@ package cz.satorigeeks.telegramrpg.state
 
 import cz.satorigeeks.telegramrpg.model.Enemy
 import cz.satorigeeks.telegramrpg.model.Hero
+import cz.satorigeeks.telegramrpg.model.Item
 import eu.vendeli.tgbot.types.User
 
 object SessionManager {
@@ -38,5 +39,13 @@ object SessionManager {
 
     fun  getHeroFirst(user: User): Boolean {
         return get(user).heroFirst
+    }
+
+    fun setItemToBeUsed(user: User, itemToBeUsed: Item?) {
+        get(user).itemToBeUsed = itemToBeUsed
+    }
+
+    fun getItemToBeUsed(user: User): Item? {
+        return get(user).itemToBeUsed
     }
 }

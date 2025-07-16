@@ -58,7 +58,8 @@ object RoamMenuController {
             return
         }
 
-        when (RoamMenuAction.valueOf(update.text)) {
+        val action = enumValues<RoamMenuAction>().find { it.name == update.text }
+        when (action) {
             RoamMenuAction.ATTACK -> {
                 combatState = CombatEngine.fight(hero, enemy, heroFirst)
 
@@ -74,7 +75,12 @@ object RoamMenuController {
             }
 
             RoamMenuAction.INVENTORY -> {
-                message { "Opening inventory... which item to use?" }.send(user, bot)
+                if (hero.isInventoryEmpty())
+                    message { "❌ Your inventory is empty." }.send(user, bot)
+                else {
+                    InventoryMenuController.show(user, bot)
+                    return
+                }
             }
 
             RoamMenuAction.RUN -> {
@@ -84,13 +90,12 @@ object RoamMenuController {
                         combatState = CombatEngine.CombatState(CombatEngine.CombatState.CombatResult.FLED)
                     } else {
                         message { "❌ Failed to run away!" }.send(user, bot)
-                        combatState = CombatEngine.fight(hero, enemy, heroFirst = true, failedFlee = true)
+                        combatState = CombatEngine.fight(hero, enemy, heroFirst = true, onlyEnemy = true)
                         message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
                     }
                 } else {
-                    combatState = CombatEngine.fight(hero, enemy, false)
+                    combatState = CombatEngine.fight(hero, enemy, heroFirst = false, onlyEnemy = true)
                     message { CombatEngine.resolve(combatState!!.enemyAttackResult) }.send(user, bot)
-                    message { CombatEngine.resolve(combatState!!.heroAttackResult) }.send(user, bot)
 
                     if (hero.runAway()) {
                         message { "\uD83C\uDFC3\u200D♂\uFE0F You successfully ran away." }.send(user, bot)
@@ -114,6 +119,36 @@ object RoamMenuController {
 
                     attackOrder.forEach {
                         message { CombatEngine.resolve(it) }.send(user, bot)
+                    }
+                }
+            }
+
+            // We probably came from the InventoryMenuController, so we should consume the passed item
+            null -> {
+                val itemToBeUsed = SessionManager.getItemToBeUsed(user)
+                if (itemToBeUsed != null) {
+                    if (heroFirst) {
+                        hero.useItem(itemToBeUsed)
+                        SessionManager.setItemToBeUsed(user, null)
+
+                        message {
+                            "You used ${itemToBeUsed.name} and healed ${itemToBeUsed.healingPower} HP."
+                        }.send(user, bot)
+
+                        combatState = CombatEngine.fight(hero, enemy, heroFirst = true, onlyEnemy = true)
+                        message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
+                    } else {
+                        combatState = CombatEngine.fight(hero, enemy, heroFirst = false, onlyEnemy = true)
+                        message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
+
+                        if (hero.isAlive) {
+                            hero.useItem(itemToBeUsed)
+                            SessionManager.setItemToBeUsed(user, null)
+
+                            message {
+                                "You used ${itemToBeUsed.name} and healed ${itemToBeUsed.healingPower} HP."
+                            }.send(user, bot)
+                        }
                     }
                 }
             }
