@@ -23,11 +23,18 @@ class Hero(
     private val inventory = mutableListOf<Item?>()
 
     fun addToInventory(item: Item?): Boolean {
-        if (inventory.size < maxCapacity) {
-            inventory.add(item)
-            return true
-        } else
-            return false
+        val emptySlot = inventory.indexOfFirst { it == null }
+        return when {
+            emptySlot >= 0 -> {
+                inventory[emptySlot] = item
+                true
+            }
+            inventory.size < maxCapacity -> {
+                inventory.add(item)
+                true
+            }
+            else -> false
+        }
     }
 
     fun useItem(item: Item) {
