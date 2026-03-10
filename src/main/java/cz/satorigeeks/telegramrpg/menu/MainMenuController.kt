@@ -43,7 +43,8 @@ object MainMenuController {
     suspend fun handle(update: ProcessedUpdate, user: User, bot: TelegramBot) {
         val hero = SessionManager.getHero(user)
 
-        when (MainMenuAction.valueOf(update.text)) {
+        val action = enumValues<MainMenuAction>().find { it.name == update.text }
+        when (action) {
             MainMenuAction.ROAM -> {
                 val enemy = Bestiary.gimmeBeast(hero)
                 SessionManager.setEnemy(user, enemy)
@@ -74,6 +75,10 @@ object MainMenuController {
             }
 
             MainMenuAction.SHOP -> ShopMenuController.show(user, bot)
+            null -> {
+                message { "Invalid choice." }.send(user, bot)
+                show(user, bot)
+            }
         }
     }
 }
