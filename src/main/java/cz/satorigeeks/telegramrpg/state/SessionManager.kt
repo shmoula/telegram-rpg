@@ -4,9 +4,10 @@ import cz.satorigeeks.telegramrpg.model.Enemy
 import cz.satorigeeks.telegramrpg.model.Hero
 import cz.satorigeeks.telegramrpg.model.Item
 import eu.vendeli.tgbot.types.User
+import java.util.concurrent.ConcurrentHashMap
 
 object SessionManager {
-    private val sessions = mutableMapOf<Long, UserSession>()
+    private val sessions = ConcurrentHashMap<Long, UserSession>()
 
     fun get(user: User): UserSession =
         sessions.getOrPut(user.id) {
