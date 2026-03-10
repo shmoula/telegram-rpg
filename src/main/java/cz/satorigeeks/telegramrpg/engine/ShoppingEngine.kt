@@ -21,7 +21,7 @@ class ShoppingEngine() {
     fun buy(hero: Hero, item: Item): String {
         return when {
             hero.money < item.cost -> "You do not have enough money to purchase that item."
-            !hero.addToInventory(item) -> "You tried to purchase this but your inventory slots are full."
+            !hero.addToInventory(item.copy()) -> "You tried to purchase this but your inventory slots are full."
             else -> {
                 hero.money -= item.cost
                 "Purchased ${item.name}. Gold left: ${hero.money.toInt()}."

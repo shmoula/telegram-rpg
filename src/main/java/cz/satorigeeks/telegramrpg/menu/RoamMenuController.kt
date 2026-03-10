@@ -108,7 +108,9 @@ object RoamMenuController {
 
             RoamMenuAction.AUTOPILOT -> {
                 message { "\uD83E\uDD16 Autopilot engaged! Battling on your behalf." }.send(user, bot)
-                while (hero.isAlive && enemy.isAlive) {
+                val maxRounds = 10
+                var rounds = 0
+                while (hero.isAlive && enemy.isAlive && rounds < maxRounds) {
                     combatState = CombatEngine.fight(hero, enemy, heroFirst)
 
                     // Print the combat round details according to the order.
@@ -117,9 +119,17 @@ object RoamMenuController {
                     else
                         listOf(combatState.enemyAttackResult, combatState.heroAttackResult)
 
-                    attackOrder.forEach {
-                        message { CombatEngine.resolve(it) }.send(user, bot)
+                    val roundSummary = attackOrder
+                        .map { CombatEngine.resolve(it) }
+                        .filter { it.isNotBlank() }
+                        .joinToString("\n")
+                    if (roundSummary.isNotBlank()) {
+                        message { roundSummary }.send(user, bot)
                     }
+                    rounds++
+                }
+                if (rounds >= maxRounds && hero.isAlive && enemy.isAlive) {
+                    message { "⚠️ Autopilot paused after $maxRounds rounds to avoid chat spam." }.send(user, bot)
                 }
             }
 

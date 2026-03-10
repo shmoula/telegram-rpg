@@ -58,6 +58,7 @@ object InventoryMenuController {
         } else {
             message { "Invalid choice." }.send(user, bot)
             show(user, bot)
+            return
         }
 
         RoamMenuController.handle(update, user, bot)
