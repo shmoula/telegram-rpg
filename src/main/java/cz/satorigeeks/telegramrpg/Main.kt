@@ -8,9 +8,14 @@ import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.annotations.UnprocessedHandler
+import eu.vendeli.tgbot.api.botactions.deleteMyCommands
+import eu.vendeli.tgbot.api.botactions.setMyCommands
 import eu.vendeli.tgbot.types.User
+import eu.vendeli.tgbot.types.bot.BotCommand
+import eu.vendeli.tgbot.types.bot.BotCommandScope
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
 import io.github.cdimascio.dotenv.dotenv
+
 
 /**
  * Entry point and central dispatcher for the bot.
@@ -26,6 +31,13 @@ suspend fun main() {
         ?: error("Missing TELEGRAM_BOT_TOKEN in environment")
 
     val bot = TelegramBot(token)
+
+    setMyCommands {
+        BotCommandScope.Default()
+        BotCommand("start", "Starts your adventure.")
+        BotCommand("info", "Shows info about the bot & developer.")
+        BotCommand("check_stats", "Shows player stats.")
+    }.send(bot)
 
     bot.handleUpdates()
 }
