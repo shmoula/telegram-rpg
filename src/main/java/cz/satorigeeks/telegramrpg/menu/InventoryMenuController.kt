@@ -1,18 +1,11 @@
 package cz.satorigeeks.telegramrpg.menu
 
-import cz.satorigeeks.telegramrpg.engine.CombatEngine.enemyAttack
-import cz.satorigeeks.telegramrpg.engine.CombatEngine.resolve
-import cz.satorigeeks.telegramrpg.menu.MainMenuController.MainMenuAction
-import cz.satorigeeks.telegramrpg.menu.ShopMenuController.shoppingEngine
-import cz.satorigeeks.telegramrpg.model.Enemy
-import cz.satorigeeks.telegramrpg.model.Hero
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
-import kotlin.math.roundToInt
 
 object InventoryMenuController {
 
@@ -41,7 +34,8 @@ object InventoryMenuController {
         val hero = SessionManager.getHero(user)
         val inventory = hero.getInventory()
 
-        val index = update.text.trim().toIntOrNull()
+        val text = requireNonBlankText(update, user, bot) { show(user, bot) } ?: return
+        val index = text.toIntOrNull()
 
         // Leave the inventory
         if (index == inventory.size) {

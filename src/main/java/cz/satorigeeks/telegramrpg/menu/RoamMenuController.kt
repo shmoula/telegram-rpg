@@ -52,13 +52,14 @@ object RoamMenuController {
         val enemy = SessionManager.getEnemy(user)
         val heroFirst = SessionManager.getHeroFirst(user)
         var combatState: CombatEngine.CombatState? = null
+        val text = requireNonBlankText(update, user, bot) { show(user, bot) } ?: return
 
         if (enemy == null) {
             MainMenuController.show(user, bot)
             return
         }
 
-        val action = enumValues<RoamMenuAction>().find { it.name == update.text }
+        val action = enumValues<RoamMenuAction>().find { it.name == text }
         when (action) {
             RoamMenuAction.ATTACK -> {
                 combatState = CombatEngine.fight(hero, enemy, heroFirst)

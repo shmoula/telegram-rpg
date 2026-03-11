@@ -40,7 +40,8 @@ object ShopMenuController {
         val hero = SessionManager.getHero(user)
         val shopItems = shoppingEngine.shopItems
 
-        val index = update.text.trim().toIntOrNull()
+        val text = requireNonBlankText(update, user, bot) { show(user, bot) } ?: return
+        val index = text.toIntOrNull()
         if (index == null || index !in 0..shopItems.size) {
             message { "Invalid choice." }.send(user, bot)
             show(user, bot)

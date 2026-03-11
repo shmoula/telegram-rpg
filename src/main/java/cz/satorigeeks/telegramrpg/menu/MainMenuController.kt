@@ -42,8 +42,9 @@ object MainMenuController {
      */
     suspend fun handle(update: ProcessedUpdate, user: User, bot: TelegramBot) {
         val hero = SessionManager.getHero(user)
+        val text = requireNonBlankText(update, user, bot) { show(user, bot) } ?: return
 
-        val action = enumValues<MainMenuAction>().find { it.name == update.text }
+        val action = enumValues<MainMenuAction>().find { it.name == text }
         when (action) {
             MainMenuAction.ROAM -> {
                 val enemy = Bestiary.gimmeBeast(hero)
