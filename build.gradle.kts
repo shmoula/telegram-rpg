@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    application
     kotlin("jvm") version "2.1.21"
 
     id("com.google.devtools.ksp") version "2.1.21-2.0.2"
@@ -17,6 +18,10 @@ java {
 
 kotlin {
     jvmToolchain(23)
+}
+
+application {
+    mainClass.set("cz.satorigeeks.telegramrpg.MainKt")
 }
 
 repositories {
