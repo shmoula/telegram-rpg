@@ -185,6 +185,9 @@ object RoamMenuController {
                     message {
                         "\uD83C\uDFC6 You have vanquished the beast and received ${combatState.gold} Gold and ${combatState.exp} experience!"
                     }.send(user, bot)
+                    hero.consumeLevelUpMessage()?.let { levelUpMessage ->
+                        message { levelUpMessage }.send(user, bot)
+                    }
                     MainMenuController.show(user, bot)
                 }
 

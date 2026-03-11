@@ -21,6 +21,7 @@ class Hero(
 
     private val maxCapacity = 5
     private val inventory = mutableListOf<Item?>()
+    private var pendingLevelUpMessage: String? = null
 
     fun addToInventory(item: Item?): Boolean {
         val emptySlot = inventory.indexOfFirst { it == null }
@@ -29,10 +30,12 @@ class Hero(
                 inventory[emptySlot] = item
                 true
             }
+
             inventory.size < maxCapacity -> {
                 inventory.add(item)
                 true
             }
+
             else -> false
         }
     }
@@ -64,12 +67,18 @@ class Hero(
     private fun checkLevelUp() {
         if (experience >= 100) {
             level++
-            experience = 0
+            experience -= 100
             attackPower *= 1.1
             health *= 1.1
 
-            println("Congrats! You leveled up to level $level");
+            pendingLevelUpMessage = "Congrats! You leveled up to level $level"
         }
+    }
+
+    fun consumeLevelUpMessage(): String? {
+        val message = pendingLevelUpMessage
+        pendingLevelUpMessage = null
+        return message
     }
 
     fun getInfo(): String {
