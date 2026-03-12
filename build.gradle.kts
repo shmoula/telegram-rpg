@@ -1,10 +1,11 @@
 plugins {
     id("java")
     application
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm")
 
-    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
-    id("eu.vendeli.telegram-bot") version "8.1.0"
+    id("com.gradleup.shadow")
+    id("com.google.devtools.ksp")
+    id("eu.vendeli.telegram-bot")
 }
 
 group = "cz.satorigeeks.telegramrpg"
@@ -31,4 +32,14 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("telegram-rpg")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+
+    manifest {
+        attributes["Main-Class"] = "cz.satorigeeks.telegramrpg.MainKt"
+    }
 }

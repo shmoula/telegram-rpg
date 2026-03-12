@@ -1,16 +1,14 @@
-FROM eclipse-temurin:23-jdk
-
+# Stage 1: Build
+FROM eclipse-temurin:23-jdk AS builder
 WORKDIR /app
+COPY . .
+RUN ./gradlew --no-daemon shadowJar
 
-# Copy Gradle wrapper and build scripts first to leverage layer caching.
-COPY gradlew ./
-COPY gradle ./gradle
-COPY build.gradle.kts settings.gradle.kts ./
-RUN chmod +x ./gradlew
+# Stage 2: Runtime
+FROM eclipse-temurin:23-jre-alpine
+WORKDIR /app
+# Copy the specific JAR we just built
+COPY --from=builder /app/build/libs/telegram-rpg.jar app.jar
 
-# Copy sources and build once to warm caches.
-COPY src ./src
-RUN ./gradlew --no-daemon build -x test
-
-# Run the bot.
-CMD ["./gradlew", "--no-daemon", "run"]
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseSerialGC"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
