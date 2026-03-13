@@ -49,4 +49,8 @@ object SessionManager {
     fun getItemToBeUsed(user: User): Item? {
         return get(user).itemToBeUsed
     }
+
+    fun reset(user: User) {
+        sessions[user.id] = UserSession(Hero(user.firstName, 100.0, 10.0), GameState.MAIN_MENU)
+    }
 }

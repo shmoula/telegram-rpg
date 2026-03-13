@@ -177,7 +177,7 @@ object RoamMenuController {
                 }
 
                 CombatEngine.CombatState.CombatResult.LOSS -> {
-                    message { "\uD83D\uDC80 ${hero.name} has fallen. Game over." }.send(user, bot)
+                    message { "\uD83D\uDC80 ${hero.name} has fallen. Game over. Use /restart to try again." }.send(user, bot)
                     MainMenuController.show(user, bot)
                 }
 

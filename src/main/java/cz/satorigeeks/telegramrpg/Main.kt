@@ -37,6 +37,7 @@ suspend fun main() {
         BotCommand("start", "Starts your adventure.")
         BotCommand("info", "Shows info about the bot & developer.")
         BotCommand("check_stats", "Shows player stats.")
+        BotCommand("restart", "Resets your game progress.")
     }.send(bot)
 
     bot.handleUpdates()
