@@ -8,6 +8,10 @@ class Hero(
     attackPower: Double
 ) : Character(name, health, attackPower) {
 
+    companion object {
+        const val MAX_INVENTORY_CAPACITY = 5
+    }
+
     var level: Int = 1
         private set
 
@@ -19,24 +23,16 @@ class Hero(
 
     var money: Float = 50f
 
-    private val maxCapacity = 5
-    private val inventory = mutableListOf<Item?>()
+    private val inventory = MutableList<Item?>(MAX_INVENTORY_CAPACITY) { null }
     private var pendingLevelUpMessage: String? = null
 
     fun addToInventory(item: Item?): Boolean {
         val emptySlot = inventory.indexOfFirst { it == null }
-        return when {
-            emptySlot >= 0 -> {
-                inventory[emptySlot] = item
-                true
-            }
-
-            inventory.size < maxCapacity -> {
-                inventory.add(item)
-                true
-            }
-
-            else -> false
+        return if (emptySlot >= 0) {
+            inventory[emptySlot] = item
+            true
+        } else {
+            false
         }
     }
 
@@ -53,7 +49,7 @@ class Hero(
             if (item != null) {
                 "${idx + 1}) ${item.name} (heals ${item.healingPower})"
             } else {
-                "${idx + 1}) [empty]"
+                "${idx + 1}) empty"
             }
         }
 
@@ -82,12 +78,12 @@ class Hero(
     }
 
     fun getInfo(): String {
-        return "Hero name: " + name + "\n" +
-                "Hero health: " + health.roundToInt() + "\n" +
-                "Hero attack power: " + attackPower.roundToInt() + "\n" +
-                "Hero level: " + level + "\n" +
-                "Hero experience: " + experience + "\n" +
-                "Hero bank account: " + money + "\n" +
-                "Inventory: " + showInventory()
+        return "\uD83D\uDC64 Hero name: " + name + "\n" +
+                "❤\uFE0F Hero health: " + health.roundToInt() + "\n" +
+                "⚔\uFE0F Hero attack power: " + attackPower.roundToInt() + "\n" +
+                "\uD83D\uDCC8 Hero level: " + level + "\n" +
+                "✨ Hero experience: " + experience + "\n" +
+                "\uD83D\uDCB0 Hero bank account: " + money + "\n\n" +
+                "*Inventory:* \n" + showInventory().joinToString(separator = "\n")
     }
 }

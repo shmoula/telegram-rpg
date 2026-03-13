@@ -7,6 +7,7 @@ import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
+import eu.vendeli.tgbot.types.component.ParseMode
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
 import kotlin.random.Random
 
@@ -64,7 +65,9 @@ object MainMenuController {
             }
 
             MainMenuAction.INFO -> {
-                message { hero.getInfo() }.send(user, bot)
+                message { hero.getInfo() }
+                    .options { parseMode = ParseMode.Markdown }
+                    .send(user, bot)
                 show(user, bot)
             }
 
