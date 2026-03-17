@@ -9,5 +9,6 @@ data class UserSession(
     var gameState: GameState,
     var enemy: Enemy? = null,
     var heroFirst: Boolean = true,
-    var itemToBeUsed: Item? = null
+    var itemToBeUsed: Item? = null,
+    var inventoryReturnToMainMenu: Boolean = false
 )

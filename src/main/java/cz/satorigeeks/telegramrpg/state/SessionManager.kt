@@ -50,6 +50,14 @@ object SessionManager {
         return get(user).itemToBeUsed
     }
 
+    fun setInventoryReturnToMainMenu(user: User, returnToMainMenu: Boolean) {
+        get(user).inventoryReturnToMainMenu = returnToMainMenu
+    }
+
+    fun getInventoryReturnToMainMenu(user: User): Boolean {
+        return get(user).inventoryReturnToMainMenu
+    }
+
     fun reset(user: User) {
         sessions[user.id] = UserSession(Hero(user.firstName, 100.0, 10.0), GameState.MAIN_MENU)
     }

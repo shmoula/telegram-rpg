@@ -24,6 +24,9 @@ class Hero(
     var money: Float = 50f
 
     private val inventory = MutableList<Item?>(MAX_INVENTORY_CAPACITY) { null }
+    private var baseAttackPower: Double = attackPower
+    private var weaponBonus: Double = 0.0
+    private var equippedWeapon: Item? = null
     private var pendingLevelUpMessage: String? = null
 
     fun addToInventory(item: Item?): Boolean {
@@ -36,8 +39,15 @@ class Hero(
         }
     }
 
-    fun useItem(item: Item) {
-        health += item.healingPower
+    fun useItem(item: Item): String {
+        return when (item.type) {
+            ItemType.POTION -> {
+                health += item.healingPower
+                "You used ${item.name} and healed ${item.healingPower} HP."
+            }
+
+            ItemType.WEAPON -> equipWeapon(item)
+        }
     }
 
     fun removeFromInventory(slot: Int) {
@@ -47,7 +57,15 @@ class Hero(
     fun showInventory(): List<String> =
         inventory.mapIndexed { idx, item ->
             if (item != null) {
-                "${idx + 1}) ${item.name} (heals ${item.healingPower})"
+                when (item.type) {
+                    ItemType.POTION ->
+                        "${idx + 1}) ${item.name} (heals ${item.healingPower})"
+
+                    ItemType.WEAPON -> {
+                        val equippedTag = if (item.isEquipped) " equipped" else ""
+                        "${idx + 1}) ${item.name} (attack +${item.attackPower}$equippedTag)"
+                    }
+                }
             } else {
                 "${idx + 1}) empty"
             }
@@ -64,10 +82,34 @@ class Hero(
         if (experience >= 100) {
             level++
             experience -= 100
-            attackPower *= 1.1
+            baseAttackPower *= 1.1
+            attackPower = baseAttackPower + weaponBonus
             health *= 1.1
 
             pendingLevelUpMessage = "Congrats! You leveled up to level $level"
+        }
+    }
+
+    private fun equipWeapon(item: Item): String {
+        if (item.isEquipped) {
+            return "${item.name} is already equipped."
+        }
+
+        val previousWeapon = equippedWeapon
+        if (previousWeapon != null) {
+            previousWeapon.isEquipped = false
+            weaponBonus -= previousWeapon.attackPower
+        }
+
+        equippedWeapon = item
+        item.isEquipped = true
+        weaponBonus += item.attackPower
+        attackPower = baseAttackPower + weaponBonus
+
+        return if (previousWeapon != null) {
+            "You equipped ${item.name} (+${item.attackPower} ATK), replacing ${previousWeapon.name}."
+        } else {
+            "You equipped ${item.name} (+${item.attackPower} ATK)."
         }
     }
 

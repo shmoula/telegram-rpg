@@ -1,6 +1,7 @@
 package cz.satorigeeks.telegramrpg.menu
 
 import cz.satorigeeks.telegramrpg.engine.ShoppingEngine
+import cz.satorigeeks.telegramrpg.model.ItemType
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
@@ -24,7 +25,12 @@ object ShopMenuController {
         message { "Welcome to the shop, you have ${hero.money} Gold. What would you like to buy?" }
             .inlineKeyboardMarkup {
                 shopItems.forEachIndexed { index, item ->
-                    "${item.name}, ${item.cost} Gold (Heals ${item.healingPower} HP)" callback index.toString()
+                    when (item.type) {
+                        ItemType.POTION ->
+                            "${item.name}, ${item.cost} Gold (Heals ${item.healingPower} HP)" callback index.toString()
+                        ItemType.WEAPON ->
+                            "${item.name}, ${item.cost} Gold (Attack +${item.attackPower})" callback index.toString()
+                    }
                     newLine()
                 }
                 "Leave shop" callback shopItems.size.toString()

@@ -139,12 +139,10 @@ object RoamMenuController {
                 val itemToBeUsed = SessionManager.getItemToBeUsed(user)
                 if (itemToBeUsed != null) {
                     if (heroFirst) {
-                        hero.useItem(itemToBeUsed)
+                        val useMessage = hero.useItem(itemToBeUsed)
                         SessionManager.setItemToBeUsed(user, null)
 
-                        message {
-                            "You used ${itemToBeUsed.name} and healed ${itemToBeUsed.healingPower} HP."
-                        }.send(user, bot)
+                        message { useMessage }.send(user, bot)
 
                         combatState = CombatEngine.fight(hero, enemy, heroFirst = true, onlyEnemy = true)
                         message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
@@ -153,12 +151,10 @@ object RoamMenuController {
                         message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
 
                         if (hero.isAlive) {
-                            hero.useItem(itemToBeUsed)
+                            val useMessage = hero.useItem(itemToBeUsed)
                             SessionManager.setItemToBeUsed(user, null)
 
-                            message {
-                                "You used ${itemToBeUsed.name} and healed ${itemToBeUsed.healingPower} HP."
-                            }.send(user, bot)
+                            message { useMessage }.send(user, bot)
                         }
                     }
                 }

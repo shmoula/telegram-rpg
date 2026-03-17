@@ -19,7 +19,8 @@ object MainMenuController {
         ROAM,
         INFO,
         REST,
-        SHOP
+        SHOP,
+        INVENTORY
     }
 
     /**
@@ -34,6 +35,8 @@ object MainMenuController {
             "\uD83D\uDECF\uFE0F Rest at inn" callback MainMenuAction.REST.name
             newLine()
             "\uD83D\uDED2 Shop at store" callback MainMenuAction.SHOP.name
+            newLine()
+            "\uD83C\uDF92 Inventory" callback MainMenuAction.INVENTORY.name
         }.send(user, bot)
         SessionManager.setState(user, GameState.MAIN_MENU)
     }
@@ -79,6 +82,7 @@ object MainMenuController {
             }
 
             MainMenuAction.SHOP -> ShopMenuController.show(user, bot)
+            MainMenuAction.INVENTORY -> InventoryMenuController.show(user, bot, returnToMainMenu = true)
             null -> {
                 message { "Invalid choice." }.send(user, bot)
                 show(user, bot)

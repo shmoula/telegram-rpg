@@ -2,14 +2,18 @@ package cz.satorigeeks.telegramrpg.engine
 
 import cz.satorigeeks.telegramrpg.model.Hero
 import cz.satorigeeks.telegramrpg.model.Item
+import cz.satorigeeks.telegramrpg.model.ItemType
 
 /**
  * Encapsulates shop logic: buying potions, checking gold and inventory space.
  */
 class ShoppingEngine() {
     val shopItems = listOf(
-        Item("Potion", 20, 10),
-        Item("Super Potion", 50, 30)
+        Item("Potion", ItemType.POTION, healingPower = 20, attackPower = 0, cost = 10),
+        Item("Super Potion", ItemType.POTION, healingPower = 50, attackPower = 0, cost = 30),
+        Item("Knife", ItemType.WEAPON, healingPower = 0, attackPower = 3, cost = 25),
+        Item("Sword", ItemType.WEAPON, healingPower = 0, attackPower = 6, cost = 55),
+        Item("Mace", ItemType.WEAPON, healingPower = 0, attackPower = 8, cost = 75)
     )
 
     /**
