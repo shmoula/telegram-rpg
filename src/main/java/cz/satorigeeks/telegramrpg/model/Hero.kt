@@ -54,6 +54,15 @@ class Hero(
         inventory[slot] = null
     }
 
+    fun takeFromInventory(slot: Int): Item? {
+        val item = inventory.getOrNull(slot) ?: return null
+        if (item.type == ItemType.WEAPON && item.isEquipped) {
+            unequipWeapon(item)
+        }
+        inventory[slot] = null
+        return item
+    }
+
     fun showInventory(): List<String> =
         inventory.mapIndexed { idx, item ->
             if (item != null) {
@@ -111,6 +120,16 @@ class Hero(
         } else {
             "You equipped ${item.name} (+${item.attackPower} ATK)."
         }
+    }
+
+    private fun unequipWeapon(item: Item) {
+        if (equippedWeapon != item) {
+            return
+        }
+        item.isEquipped = false
+        weaponBonus -= item.attackPower
+        equippedWeapon = null
+        attackPower = baseAttackPower + weaponBonus
     }
 
     fun consumeLevelUpMessage(): String? {
