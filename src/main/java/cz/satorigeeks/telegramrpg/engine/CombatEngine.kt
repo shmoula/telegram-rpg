@@ -2,12 +2,16 @@ package cz.satorigeeks.telegramrpg.engine
 
 import cz.satorigeeks.telegramrpg.model.Enemy
 import cz.satorigeeks.telegramrpg.model.Hero
+import cz.satorigeeks.telegramrpg.model.Item
 import kotlin.random.Random
 
 /**
  * Handles the combat logic between Hero and Enemy.
  */
 object CombatEngine {
+    private const val LOOT_DROP_CHANCE = 0.2
+    private val lootTable = ShoppingEngine().shopItems
+
     // Represents the result of an attack.
     data class AttackResult(
         val attacker: String,
@@ -22,7 +26,9 @@ object CombatEngine {
         val heroAttackResult: AttackResult? = null,
         val enemyAttackResult: AttackResult? = null,
         val gold: Int = 0,
-        val exp: Int = 0
+        val exp: Int = 0,
+        val lootItem: Item? = null,
+        val lootAdded: Boolean = false
     ) {
         enum class CombatResult {
             LOSS, VICTORY, CONTINUE, FLED
@@ -62,7 +68,16 @@ object CombatEngine {
 
                 hero.money += gold
                 hero.experience += exp
-                CombatState(CombatState.CombatResult.VICTORY, heroAttackResult, enemyAttackResult, gold, exp)
+                val (lootItem, lootAdded) = rollLoot(hero)
+                CombatState(
+                    CombatState.CombatResult.VICTORY,
+                    heroAttackResult,
+                    enemyAttackResult,
+                    gold,
+                    exp,
+                    lootItem,
+                    lootAdded
+                )
             }
 
             else -> CombatState(CombatState.CombatResult.CONTINUE, heroAttackResult, enemyAttackResult)
@@ -133,5 +148,16 @@ object CombatEngine {
             val type = if (result.wasSpecial) "special" else "normal"
             return "${result.attacker} hits ${result.target} for ${result.damage.toInt()} HP ($type)"
         }
+    }
+
+    private fun rollLoot(hero: Hero): Pair<Item?, Boolean> {
+        val roll = Random.nextDouble()
+        if (roll >= LOOT_DROP_CHANCE) {
+            return null to false
+        }
+        val template = lootTable.random()
+        val item = template.copy(isEquipped = false)
+        val added = hero.addToInventory(item)
+        return item to added
     }
 }

@@ -181,6 +181,14 @@ object RoamMenuController {
                     message {
                         "\uD83C\uDFC6 You have vanquished the beast and received ${combatState.gold} Gold and ${combatState.exp} experience!"
                     }.send(user, bot)
+                    combatState.lootItem?.let { item ->
+                        val lootMessage = if (combatState.lootAdded) {
+                            "\uD83C\uDF81 The enemy dropped ${item.name}, added to your inventory."
+                        } else {
+                            "\uD83D\uDCE6 The enemy dropped ${item.name}, but your inventory is full."
+                        }
+                        message { lootMessage }.send(user, bot)
+                    }
                     hero.consumeLevelUpMessage()?.let { levelUpMessage ->
                         message { levelUpMessage }.send(user, bot)
                     }
