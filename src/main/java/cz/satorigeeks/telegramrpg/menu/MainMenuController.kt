@@ -78,6 +78,7 @@ object MainMenuController {
                 message {
                     WorldEngine.rest(hero)
                 }.send(user, bot)
+                SessionManager.saveHero(user)
                 show(user, bot)
             }
 

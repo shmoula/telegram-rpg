@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.state
 
+import cz.satorigeeks.telegramrpg.db.UserRepository
 import cz.satorigeeks.telegramrpg.model.Enemy
 import cz.satorigeeks.telegramrpg.model.Hero
 import cz.satorigeeks.telegramrpg.model.Item
@@ -11,7 +12,8 @@ object SessionManager {
 
     fun get(user: User): UserSession =
         sessions.getOrPut(user.id) {
-            UserSession(Hero(user.firstName, 100.0, 10.0), GameState.MAIN_MENU)
+            val persisted = UserRepository.load(user)
+            UserSession(persisted ?: Hero(user.firstName, 100.0, 10.0), GameState.MAIN_MENU)
         }
 
     fun setState(user: User, newState: GameState) {
@@ -38,7 +40,7 @@ object SessionManager {
         get(user).heroFirst = heroFirst
     }
 
-    fun  getHeroFirst(user: User): Boolean {
+    fun getHeroFirst(user: User): Boolean {
         return get(user).heroFirst
     }
 
@@ -59,6 +61,12 @@ object SessionManager {
     }
 
     fun reset(user: User) {
-        sessions[user.id] = UserSession(Hero(user.firstName, 100.0, 10.0), GameState.MAIN_MENU)
+        val freshHero = Hero(user.firstName, 100.0, 10.0)
+        sessions[user.id] = UserSession(freshHero, GameState.MAIN_MENU)
+        UserRepository.delete(user)
+    }
+
+    fun saveHero(user: User) {
+        UserRepository.save(user, getHero(user))
     }
 }

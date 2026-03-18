@@ -31,6 +31,7 @@ object ShopMenuController {
                     when (item.type) {
                         ItemType.POTION ->
                             "${item.name}, ${item.cost} Gold (Heals ${item.healingPower} HP)" callback index.toString()
+
                         ItemType.WEAPON ->
                             "${item.name}, ${item.cost} Gold (Attack +${item.attackPower})" callback index.toString()
                     }
@@ -58,6 +59,7 @@ object ShopMenuController {
                     when (item.type) {
                         ItemType.POTION ->
                             "${item.name} (Heals ${item.healingPower} HP) - $price Gold" callback "SELL_$index"
+
                         ItemType.WEAPON -> {
                             val equippedTag = if (item.isEquipped) ", Equipped" else ""
                             "${item.name} (Attack +${item.attackPower}$equippedTag) - $price Gold" callback "SELL_$index"
@@ -98,6 +100,7 @@ object ShopMenuController {
             val price = sellPrice(item.cost)
             hero.money += price
             message { "Sold ${item.name} for $price Gold. You now have ${hero.money.toInt()} Gold." }.send(user, bot)
+            SessionManager.saveHero(user)
             showSellMenu(user, bot)
             return
         }
@@ -119,6 +122,7 @@ object ShopMenuController {
         val selectedItem = shopItems[index]
         val result = shoppingEngine.buy(hero, selectedItem)
         message { result }.send(user, bot)
+        SessionManager.saveHero(user)
         show(user, bot)
     }
 }

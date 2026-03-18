@@ -6,6 +6,7 @@ import cz.satorigeeks.telegramrpg.state.SessionManager
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
+import eu.vendeli.tgbot.types.component.ParseMode
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
 
 /**
@@ -161,6 +162,8 @@ object RoamMenuController {
             }
         }
 
+        SessionManager.saveHero(user)
+
         if (combatState == null)
             show(user, bot)
         else
@@ -173,8 +176,13 @@ object RoamMenuController {
                 }
 
                 CombatEngine.CombatState.CombatResult.LOSS -> {
-                    message { "\uD83D\uDC80 ${hero.name} has fallen. Game over. Use /restart to try again." }.send(user, bot)
-                    MainMenuController.show(user, bot)
+                    message { "\uD83D\uDC80 ${hero.name} has fallen. Game over. Use /restart to try again." }.send(
+                        user,
+                        bot
+                    )
+                    message { hero.getInfo() }
+                        .options { parseMode = ParseMode.Markdown }
+                        .send(user, bot)
                 }
 
                 CombatEngine.CombatState.CombatResult.VICTORY -> {

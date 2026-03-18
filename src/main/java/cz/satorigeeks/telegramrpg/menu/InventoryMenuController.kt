@@ -1,8 +1,8 @@
 package cz.satorigeeks.telegramrpg.menu
 
+import cz.satorigeeks.telegramrpg.model.ItemType
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
-import cz.satorigeeks.telegramrpg.model.ItemType
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message.message
 import eu.vendeli.tgbot.types.User
@@ -76,6 +76,7 @@ object InventoryMenuController {
                     hero.removeFromInventory(index)
                 }
                 message { useMessage }.send(user, bot)
+                SessionManager.saveHero(user)
                 MainMenuController.show(user, bot)
                 return
             } else {
@@ -83,6 +84,7 @@ object InventoryMenuController {
                 if (selectedItem.type == ItemType.POTION) {
                     hero.removeFromInventory(index)
                 }
+                SessionManager.saveHero(user)
             }
         } else {
             message { "Invalid choice." }.send(user, bot)

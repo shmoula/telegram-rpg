@@ -10,14 +10,33 @@ class Hero(
 
     companion object {
         const val MAX_INVENTORY_CAPACITY = 5
+
+        fun fromPersistence(
+            name: String,
+            health: Double,
+            attackPower: Double,
+            level: Int,
+            experience: Int,
+            money: Float,
+            inventory: List<Item?>
+        ): Hero {
+            val hero = Hero(name, health, attackPower)
+            hero.level = level
+            hero._experience = experience
+            hero.money = money
+            hero.applyPersistedInventory(inventory, attackPower)
+            return hero
+        }
     }
 
     var level: Int = 1
         private set
 
-    var experience: Int = 0
+    private var _experience: Int = 0
+    var experience: Int
+        get() = _experience
         set(value) {
-            field = value
+            _experience = value
             checkLevelUp()
         }
 
@@ -146,5 +165,20 @@ class Hero(
                 "✨ Hero experience: " + experience + "\n" +
                 "\uD83D\uDCB0 Hero bank account: " + money + "\n\n" +
                 "*Inventory:* \n" + showInventory().joinToString(separator = "\n")
+    }
+
+    private fun applyPersistedInventory(items: List<Item?>, persistedAttackPower: Double) {
+        inventory.indices.forEach { idx ->
+            inventory[idx] = if (idx < items.size) items[idx] else null
+        }
+
+        val equipped = inventory
+            .filterIsInstance<Item>()
+            .firstOrNull { it.type == ItemType.WEAPON && it.isEquipped }
+
+        equippedWeapon = equipped
+        weaponBonus = equipped?.attackPower?.toDouble() ?: 0.0
+        baseAttackPower = (persistedAttackPower - weaponBonus).coerceAtLeast(0.0)
+        attackPower = baseAttackPower + weaponBonus
     }
 }
