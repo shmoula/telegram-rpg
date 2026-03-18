@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.menu
 
+import cz.satorigeeks.telegramrpg.Logger
 import cz.satorigeeks.telegramrpg.engine.ShoppingEngine
 import cz.satorigeeks.telegramrpg.model.ItemType
 import cz.satorigeeks.telegramrpg.state.GameState
@@ -99,6 +100,7 @@ object ShopMenuController {
             }
             val price = sellPrice(item.cost)
             hero.money += price
+            Logger.log(user, "SELL", "${item.name} for $price gold (balance: ${hero.money.toInt()})")
             message { "Sold ${item.name} for $price Gold. You now have ${hero.money.toInt()} Gold." }.send(user, bot)
             SessionManager.saveHero(user)
             showSellMenu(user, bot)
@@ -121,6 +123,7 @@ object ShopMenuController {
         // Purchase selected item
         val selectedItem = shopItems[index]
         val result = shoppingEngine.buy(hero, selectedItem)
+        Logger.log(user, "BUY", "${selectedItem.name} for ${selectedItem.cost} gold (balance: ${hero.money.toInt()})")
         message { result }.send(user, bot)
         SessionManager.saveHero(user)
         show(user, bot)

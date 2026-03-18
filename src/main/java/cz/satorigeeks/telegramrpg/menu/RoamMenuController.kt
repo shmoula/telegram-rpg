@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.menu
 
+import cz.satorigeeks.telegramrpg.Logger
 import cz.satorigeeks.telegramrpg.engine.CombatEngine
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
@@ -63,6 +64,7 @@ object RoamMenuController {
         val action = enumValues<RoamMenuAction>().find { it.name == text }
         when (action) {
             RoamMenuAction.ATTACK -> {
+                Logger.log(user, "ATTACK", "${hero.name} vs ${enemy.name}")
                 combatState = CombatEngine.fight(hero, enemy, heroFirst)
 
                 // Print the combat round details according to the order.
@@ -88,9 +90,11 @@ object RoamMenuController {
             RoamMenuAction.RUN -> {
                 if (heroFirst) {
                     if (hero.runAway()) {
+                        Logger.log(user, "RUN", "escaped from ${enemy.name}")
                         message { "\uD83C\uDFC3\u200D♂\uFE0F You successfully ran away." }.send(user, bot)
                         combatState = CombatEngine.CombatState(CombatEngine.CombatState.CombatResult.FLED)
                     } else {
+                        Logger.log(user, "RUN", "failed to escape from ${enemy.name}")
                         message { "❌ Failed to run away!" }.send(user, bot)
                         combatState = CombatEngine.fight(hero, enemy, heroFirst = true, onlyEnemy = true)
                         message { CombatEngine.resolve(combatState.enemyAttackResult) }.send(user, bot)
@@ -100,15 +104,18 @@ object RoamMenuController {
                     message { CombatEngine.resolve(combatState!!.enemyAttackResult) }.send(user, bot)
 
                     if (hero.runAway()) {
+                        Logger.log(user, "RUN", "escaped from ${enemy.name} (after enemy turn)")
                         message { "\uD83C\uDFC3\u200D♂\uFE0F You successfully ran away." }.send(user, bot)
                         combatState = CombatEngine.CombatState(CombatEngine.CombatState.CombatResult.FLED)
                     } else {
+                        Logger.log(user, "RUN", "failed to escape from ${enemy.name} (after enemy turn)")
                         message { "❌ Failed to run away!" }.send(user, bot)
                     }
                 }
             }
 
             RoamMenuAction.AUTOPILOT -> {
+                Logger.log(user, "AUTOPILOT", "battling ${enemy.name}")
                 message { "\uD83E\uDD16 Autopilot engaged! Battling on your behalf." }.send(user, bot)
                 val maxRounds = 10
                 var rounds = 0
@@ -176,6 +183,7 @@ object RoamMenuController {
                 }
 
                 CombatEngine.CombatState.CombatResult.LOSS -> {
+                    Logger.log(user, "DEFEAT", "${hero.name} was defeated by ${enemy.name}")
                     message { "\uD83D\uDC80 ${hero.name} has fallen. Game over. Use /restart to try again." }.send(
                         user,
                         bot
@@ -186,6 +194,7 @@ object RoamMenuController {
                 }
 
                 CombatEngine.CombatState.CombatResult.VICTORY -> {
+                    Logger.log(user, "VICTORY", "${hero.name} defeated ${enemy.name}, earned ${combatState.gold} gold and ${combatState.exp} XP")
                     message {
                         "\uD83C\uDFC6 You have vanquished the beast and received ${combatState.gold} Gold and ${combatState.exp} experience!"
                     }.send(user, bot)

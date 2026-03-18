@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.menu
 
+import cz.satorigeeks.telegramrpg.Logger
 import cz.satorigeeks.telegramrpg.engine.WorldEngine
 import cz.satorigeeks.telegramrpg.model.Bestiary
 import cz.satorigeeks.telegramrpg.state.GameState
@@ -52,6 +53,7 @@ object MainMenuController {
         when (action) {
             MainMenuAction.ROAM -> {
                 val enemy = Bestiary.gimmeBeast(hero)
+                Logger.log(user, "ROAM", "encountered ${enemy.name} (HP: ${enemy.health.toInt()})")
                 SessionManager.setEnemy(user, enemy)
 
                 val heroFirst = Random.nextBoolean()
@@ -68,6 +70,7 @@ object MainMenuController {
             }
 
             MainMenuAction.INFO -> {
+                Logger.log(user, "CHECK_STATS")
                 message { hero.getInfo() }
                     .options { parseMode = ParseMode.Markdown }
                     .send(user, bot)
@@ -75,6 +78,7 @@ object MainMenuController {
             }
 
             MainMenuAction.REST -> {
+                Logger.log(user, "REST")
                 message {
                     WorldEngine.rest(hero)
                 }.send(user, bot)
@@ -82,8 +86,14 @@ object MainMenuController {
                 show(user, bot)
             }
 
-            MainMenuAction.SHOP -> ShopMenuController.show(user, bot)
-            MainMenuAction.INVENTORY -> InventoryMenuController.show(user, bot, returnToMainMenu = true)
+            MainMenuAction.SHOP -> {
+                Logger.log(user, "ENTER_SHOP")
+                ShopMenuController.show(user, bot)
+            }
+            MainMenuAction.INVENTORY -> {
+                Logger.log(user, "OPEN_INVENTORY")
+                InventoryMenuController.show(user, bot, returnToMainMenu = true)
+            }
             null -> {
                 message { "Invalid choice." }.send(user, bot)
                 show(user, bot)

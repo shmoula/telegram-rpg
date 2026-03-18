@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.commands
 
+import cz.satorigeeks.telegramrpg.Logger
 import cz.satorigeeks.telegramrpg.menu.MainMenuController
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.annotations.CommandHandler
@@ -11,6 +12,7 @@ import eu.vendeli.tgbot.types.User
  */
 @CommandHandler(["/start"])
 suspend fun start(user: User, bot: TelegramBot) {
+    Logger.log(user, "START")
     message { "Welcome to Adventure Quest!" }.send(user, bot)
     MainMenuController.show(user, bot)
 }

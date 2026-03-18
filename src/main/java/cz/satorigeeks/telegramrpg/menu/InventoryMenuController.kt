@@ -1,5 +1,6 @@
 package cz.satorigeeks.telegramrpg.menu
 
+import cz.satorigeeks.telegramrpg.Logger
 import cz.satorigeeks.telegramrpg.model.ItemType
 import cz.satorigeeks.telegramrpg.state.GameState
 import cz.satorigeeks.telegramrpg.state.SessionManager
@@ -71,6 +72,7 @@ object InventoryMenuController {
             }
 
             if (returnToMainMenu) {
+                Logger.log(user, "USE_ITEM", "${selectedItem.name} (from menu)")
                 val useMessage = hero.useItem(selectedItem)
                 if (selectedItem.type == ItemType.POTION) {
                     hero.removeFromInventory(index)
@@ -80,6 +82,7 @@ object InventoryMenuController {
                 MainMenuController.show(user, bot)
                 return
             } else {
+                Logger.log(user, "USE_ITEM", "${selectedItem.name} (in battle)")
                 SessionManager.setItemToBeUsed(user, selectedItem)
                 if (selectedItem.type == ItemType.POTION) {
                     hero.removeFromInventory(index)
