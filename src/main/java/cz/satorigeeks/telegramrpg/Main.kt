@@ -12,7 +12,6 @@ import eu.vendeli.tgbot.annotations.UnprocessedHandler
 import eu.vendeli.tgbot.api.botactions.setMyCommands
 import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.bot.BotCommand
-import eu.vendeli.tgbot.types.bot.BotCommandScope
 import eu.vendeli.tgbot.types.component.ProcessedUpdate
 import io.github.cdimascio.dotenv.dotenv
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -36,7 +35,6 @@ suspend fun main() {
     val bot = TelegramBot(token)
 
     setMyCommands {
-        BotCommandScope.Default()
         BotCommand("start", "Starts your adventure.")
         BotCommand("info", "Shows info about the bot & developer.")
         BotCommand("check_stats", "Shows player stats.")
